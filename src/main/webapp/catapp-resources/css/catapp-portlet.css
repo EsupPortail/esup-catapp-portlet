@@ -91,5 +91,11 @@
     color: #a6a6a6;
 }
 
+.catapp .handle {
+    cursor: move;
+}
 
+.catapp .help {
+    cursor: help;
+}
 
