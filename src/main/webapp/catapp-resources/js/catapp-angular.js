@@ -14,12 +14,6 @@ catAppPortlet = function (appName, resourceURL, actionURL, containerURL) {
             .get(url(encodeUrl(resourceURL), 'favapps')).success(function (data) {
                 angular.forEach(data.apps, function (appli) {
                     var favori = FavorisService.create(appli, false);
-                    var appTarget;
-                    if (favori.url.toLowerCase().indexOf($scope.contUrl) >= 0) {
-                        favori.target = "_self";
-                    } else {
-                        favori.target = "_blank";
-                    }
                     $scope.applications.push(favori);
                     $scope.prefs.push(appli.code);
                     appli.choosen = true;
@@ -90,8 +84,10 @@ catAppPortlet = function (appName, resourceURL, actionURL, containerURL) {
             });
 
         $scope.sortableOptions = {
-            handle: ".handle",
+            items: '> li',
             cursor: 'move',
+            helper: 'clone',
+            opacity: 1,
             // called after a node is dropped
             stop: function() {
                 var tmpList = [];
@@ -108,7 +104,13 @@ catAppPortlet = function (appName, resourceURL, actionURL, containerURL) {
     app.service('FavorisService', function () {
         //save method create a new favori
         this.create = function (appli, removed) {
-            var favori = {"code": appli.code, "title": appli.title, "caption": appli.caption, "description": appli.description, "url": appli.url, "acces": appli.activation, "state": removed};
+            var target;
+            if (appli.url.toLowerCase().indexOf(encodeUrl(containerURL)) >= 0) {
+                target = "_self";
+            } else {
+                target = "_blank";
+            }
+            var favori = {"code": appli.code, "title": appli.title, "caption": appli.caption, "description": appli.description, "url": appli.url, "acces": appli.activation, "state": removed, "target": target};
             return favori;
         }
 
@@ -149,15 +151,15 @@ catAppPortlet = function (appName, resourceURL, actionURL, containerURL) {
             link: function (scope, element, attrs) {
                 if ((scope.member.subDomains.length > 0)) {
                     element.append("<a href='#'><i class='fa fa-caret-right handle pull-left' style='float:left'></i>{{member.domain.caption}}</a><ul class='sub-menu'><li ng-repeat='domaine in member.subDomains'>" +
-                                   "<domaine member='domaine' add-fav='addFav()' enable-edit='enableEdit()' disable-edit='disableEdit()' prefs='prefs' get-target='getTarget()'></domaine></li></ul>");
+                        "<domaine member='domaine' add-fav='addFav()' enable-edit='enableEdit()' disable-edit='disableEdit()' prefs='prefs' get-target='getTarget()'></domaine></li></ul>");
                     $compile(element.contents())(scope)
                 } else {
                     element.append("<a href='#'><i class='fa fa-caret-right handle pull-left' style='float:left'></i>{{member.domain.caption}}</a>");
                 }
                 if ((scope.member.domain.applications.length > 0)) {
                     element.append("<ul class='sub-menu menudrop'><application ng-repeat='member in member.domain.applications'  " +
-                                   "member='member' add-fav='addFav()' enable-edit='enableEdit()' disable-edit='disableEdit()' prefs='prefs' get-target='getTarget()'>" +
-                                   "</application></ul>");
+                        "member='member' add-fav='addFav()' enable-edit='enableEdit()' disable-edit='disableEdit()' prefs='prefs' get-target='getTarget()'>" +
+                        "</application></ul>");
                     $compile(element.contents())(scope)
                 }
             }
@@ -169,34 +171,34 @@ catAppPortlet = function (appName, resourceURL, actionURL, containerURL) {
             restrict: "E",
             replace: true,
             scope: {
-                    member: '=',
-                    addFav: '&',
-                    enableEdit: '&',
-                    disableEdit: '&',
-                    prefs: '=',
-                    getTarget: '&'
+                member: '=',
+                addFav: '&',
+                enableEdit: '&',
+                disableEdit: '&',
+                prefs: '=',
+                getTarget: '&'
             },
             template:"<li class='list-group-item app-item'>"+
-                     "<a ng-click='enable()' href='#'><i class='fa fa-lg fa-question-circle pull-left'></i></a>"+
-                     "<a ng-click='pushapp();' href='#'>"+
-                     "<i ng-class=\"{'fa-star-o':prefs.indexOf(member.code)== -1, 'fa-star':prefs.indexOf(member.code)> -1}\" class='fa fa-lg text-warning pull-left'></i>" +
-                     "</a>"+
-                     "<a href='{{member.url}}' target='{{target}}'>{{member.title}}</a>"+
-                     "<div ng-show='member.editable' class='desc-appli'>"+
-                     "<div class='popover-title'>Description de l'application"+
-                     "<div class='pull-right'>"+
-                     "<a ng-click='disable()' href=''#'><i class='fa fa-lg fa-times'></i></a>"+
-                     "</div>" +
-                     "</div>"+
-                     "<div class='popover-content'><span ng-bind-html='member.description'></span>"+
-                     "</div>"+
-                     "</div>"+
-                     "</li>",
+                "<a ng-click='enable()' href='#' title='Description de l&apos;application' class='help'><i class='fa fa-lg fa-info-circle pull-left'></i></a>"+
+                "<a ng-click='pushapp();' href='#' title='Ajouter l&apos;application aux favoris'>"+
+                "<i ng-class=\"{'fa-star-o':prefs.indexOf(member.code)== -1, 'fa-star':prefs.indexOf(member.code)> -1}\" class='fa fa-lg text-warning pull-left'></i>" +
+                "</a>"+
+                "<a href='{{member.url}}' target='{{target}}'>{{member.title}}</a>"+
+                "<div ng-show='member.editable' class='desc-appli'>"+
+                "<div class='popover-title'>Description de l'application"+
+                "<div class='pull-right'>"+
+                "<a ng-click='disable()' href=''#'><i class='fa fa-lg fa-times'></i></a>"+
+                "</div>" +
+                "</div>"+
+                "<div class='popover-content'><span ng-bind-html='member.description'></span>"+
+                "</div>"+
+                "</div>"+
+                "</li>",
             link: function (scope, element, attrs) {
                 scope.target = scope.getTarget()(scope.member);
 
                 scope.pushapp = function () {
-                        scope.addFav()(scope.member);
+                    scope.addFav()(scope.member);
                 };
                 scope.enable = function () {
                     scope.enableEdit()(scope.member);

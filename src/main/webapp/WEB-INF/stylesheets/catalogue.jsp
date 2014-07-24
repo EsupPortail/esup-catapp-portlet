@@ -14,140 +14,142 @@
 <div id="catAppPortlet-<portlet:namespace/>" class="portlet-container catapp" ng-view>
 
     <div ng-controller="AppList2Ctrl" class="container">
-            <div class="alertContainer">
-                <div class="alert alert-info" ng-repeat="alert in alerts">
-                    {{alert.msg}}
-                </div>
+        <div class="alertContainer">
+            <div class="alert alert-info" ng-repeat="alert in alerts">
+                {{alert.msg}}
             </div>
+        </div>
         <div class="tabsContainer">
-        <tabset>
-            <tab heading="Favoris">
-                <div class="panel-body">
-                    <div id="dropdown-Menu-<portlet:namespace/>">
-                        <ng-switch on="applications.length > 0">
-                            <div class="ui-state-disabled" ng-switch-when="false">
-                                S&eacute;lectionner les applications dans le catalogue pour les ajouter &agrave; la liste des favoris
-                            </div>
-                        </ng-switch>
-                        <ul class="list-group" ui-sortable="sortableOptions" ng-model="applications">
-                            <li ng-repeat="application in applications" class="list-group-item list-group-item-info">
-                                <a ng-click="enableEdit(application)" href="#"><i class="fa fa-lg fa-question-circle pull-left"></i></a>
-                                <a ng-click="delFromFav($index)" href="#"><i class="fa fa-lg fa-times-circle text-danger pull-left"></i></a>
-                                <div class="pull-right">
-                                    <i class="fa fa-lg fa-sort handle"></i>
+            <tabset>
+                <tab heading="Favoris">
+                    <div class="panel-body">
+                        <div id="dropdown-Menu-<portlet:namespace/>">
+                            <ng-switch on="applications.length > 0">
+                                <div class="ui-state-disabled" ng-switch-when="false">
+                                    S&eacute;lectionner les applications dans le catalogue pour les ajouter &agrave; la liste des favoris
                                 </div>
-                                <div ng-switch="{{application.state}}" class="cat-appli">
-                                    <div ng-switch-when="true">
-                                        <span class="unavailable">{{application.title}}</span>
-                                        <div ng-show="application.editable" class="desc-appli offtree">
-                                            <div class="popover-title">Description de l'application
-                                                <div class="pull-right">
-                                                   <a ng-click="disableEdit(application)" href="#"><i class="fa fa-lg fa-times"></i></a>
-                                                </div>
-                                            </div>
-                                            <div class="popover-content">Vous n'avez pas les droits suffisants pour acc&eacute;der &agrave; cette application</div>
+                            </ng-switch>
+                            <ul class="list-group" ui-sortable="sortableOptions" ng-model="applications">
+                                <li ng-repeat="application in applications" class="list-group-item list-group-item-info">
+                                    <div class="handle">
+                                        <a ng-click="enableEdit(application)" href="#" title="Description de l'application" class="help"><i class="fa fa-lg fa-info-circle pull-left"></i></a>
+                                        <a ng-click="delFromFav($index)" href="#" title="Retirer des favoris"><i class="fa fa-lg fa-star text-warning pull-left"></i></a>
+                                        <div class="pull-right">
+                                            <i class="fa fa-lg fa-sort"></i>
                                         </div>
                                     </div>
-
-                                    <div ng-switch-when="false">
-                                        <div ng-switch="application.acces">
-
-                                            <div ng-switch-when="Activated">
-                                                <a href="{{application.url}}" target="{{application.target}}">{{application.title}}</a>
-                                                <div ng-show="application.editable" class="desc-appli offtree">
-                                                    <div class="popover-title">Description de l'application
-                                                        <div  class="pull-right">
-                                                            <a  ng-click="disableEdit(application)" href="#"><i class="fa fa-lg fa-times"></i></a>
-                                                        </div>
-                                                    </div>
-                                                    <div class="popover-content"><span ng-bind-html="application.description"></span></div>
-                                                </div>
-                                            </div>
-
-                                            <div ng-switch-when="Deactivated">
-                                                <span class="unavailable" ng-click="callTooltip($event)">{{application.title}}</span>
-                                                <div ng-show="application.editable" class="desc-appli offtree">
-                                                    <div class="popover-title">Description de l'application
-                                                        <div class="pull-right">
-                                                            <a ng-click="disableEdit(application)" href="#"><i class="fa fa-lg fa-times"></i></a>
-                                                        </div>
-                                                    </div>
-                                                    <div class="popover-content">
-                                                        <span class="info-box">L'application est provisoirement indisponible</span>
-                                                        <span ng-bind-html="application.description"></span>
+                                    <div ng-switch="{{application.state}}" class="cat-appli">
+                                        <div ng-switch-when="true">
+                                            <span class="unavailable">{{application.title}}</span>
+                                            <div ng-show="application.editable" class="desc-appli offtree">
+                                                <div class="popover-title">Description de l'application
+                                                    <div class="pull-right">
+                                                        <a ng-click="disableEdit(application)" href="#"><i class="fa fa-lg fa-times"></i></a>
                                                     </div>
                                                 </div>
-                                            </div>
-
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </tab>
-            <tab heading="Catalogue">
-                <div class="panel-body" ng-animate="'animate'">
-                    <div class="panel panel-heading">
-                            Rechercher : <input type="text" ng-model="searchText"/>
-                    </div>
-
-                    <div class="column">
-
-                        <div ng-show="(filteredData = (allApplications | filter:searchText)) && searchText && searchText.length >= 2">
-                            <span class="result-title">R&eacute;sultat de la recherche : </span>
-                            <ul>
-                                <li ng-repeat="application in filteredData" class="list-group-item list-group-item-info">
-                                    <a ng-click="enableEdit(application)" href="#"><i class="fa fa-lg fa-question-circle pull-left"></i></a>
-                                    <a ng-click="addFav(application)" href="#">
-                                        <i ng-class="{'fa-star-o':prefs.indexOf(application.code)== -1,
-                                        'fa-star':prefs.indexOf(application.code)> -1}"
-                                        class="fa fa-lg text-warning pull-left"></i>
-                                    </a>
-                                    <a href="{{application.url}}" target="{{application.target}}">{{application.title}}</a>
-                                    <div ng-show="application.editable" class="desc-appli offtree">
-                                        <div class="popover-title">Description de l'application
-                                            <div class="pull-right">
-                                                <a ng-click="disableEdit(application)" href="#"><i class="fa fa-lg fa-times"></i></a>
+                                                <div class="popover-content">Vous n'avez pas les droits suffisants pour acc&eacute;der &agrave; cette application</div>
                                             </div>
                                         </div>
-                                        <div class="popover-content"><span ng-bind-html="application.description"></span>
+
+                                        <div ng-switch-when="false">
+                                            <div ng-switch="application.acces">
+
+                                                <div ng-switch-when="Activated">
+                                                    <a href="{{application.url}}" target="{{application.target}}">{{application.title}}</a>
+                                                    <div ng-show="application.editable" class="desc-appli offtree">
+                                                        <div class="popover-title">Description de l'application
+                                                            <div  class="pull-right">
+                                                                <a  ng-click="disableEdit(application)" href="#"><i class="fa fa-lg fa-times"></i></a>
+                                                            </div>
+                                                        </div>
+                                                        <div class="popover-content"><span ng-bind-html="application.description"></span></div>
+                                                    </div>
+                                                </div>
+
+                                                <div ng-switch-when="Deactivated">
+                                                    <span class="unavailable" ng-click="callTooltip($event)">{{application.title}}</span>
+                                                    <div ng-show="application.editable" class="desc-appli offtree">
+                                                        <div class="popover-title">Description de l'application
+                                                            <div class="pull-right">
+                                                                <a ng-click="disableEdit(application)" href="#"><i class="fa fa-lg fa-times"></i></a>
+                                                            </div>
+                                                        </div>
+                                                        <div class="popover-content">
+                                                            <span class="info-box">L'application est provisoirement indisponible</span>
+                                                            <span ng-bind-html="application.description"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
                                         </div>
+
                                     </div>
                                 </li>
                             </ul>
                         </div>
+                    </div>
+                </tab>
+                <tab heading="Catalogue">
+                    <div class="panel-body" ng-animate="'animate'">
+                        <div class="panel panel-heading">
+                            Rechercher : <input type="text" ng-model="searchText"/>
+                        </div>
 
-                        <div id="sidebar-<portlet:namespace/>" class="sidebar" ng-hide="searchText && searchText.length >= 2">
-                            <span>{{domaines.domain.length}}</span>
-                            <div ng-switch="domaines.domain.caption.length>0">
-                                <div ng-switch-when="true">
-                                    <ul>
-                                        <li>
-                                            <i class="fa fa-caret-right handle pull-left" style="float:left"></i>
-                                            <a href="javascript:void(0)">{{domaines.domain.caption}}</a>
-                                            <ul class="sub-menu">
-                                                <li ng-repeat="domaine in domaines.domain.applications">
-                                                    <application member="domaine" add-fav="addFav" enable-edit="enableEdit" disable-edit="disableEdit" prefs="prefs" get-target="getTarget"></application></li>
-                                                <li ng-repeat="domaine in domaines.subDomains">
-                                                    <domaine member="domaine" add-fav="addFav" enable-edit="enableEdit" disable-edit="disableEdit" prefs="prefs" get-target="getTarget"></domaine></li>
-                                            </ul>
-                                        </li>
-                                    </ul>
+                        <div class="column">
+
+                            <div ng-show="searchText && searchText.length >= 2">
+                                <span class="result-title">R&eacute;sultat de la recherche : </span>
+                                <ul>
+                                    <li ng-repeat="application in allApplications | filter:searchText" class="list-group-item list-group-item-info">
+                                        <a ng-click="enableEdit(application)" href="#" title="Description de l'application" class="help"><i class="fa fa-lg fa-info-circle pull-left"></i></a>
+                                        <a ng-click="addFav(application)" href="#" title="Ajouter aux favoris">
+                                            <i ng-class="{'fa-star-o':prefs.indexOf(application.code)== -1,
+                                        'fa-star':prefs.indexOf(application.code)> -1}"
+                                               class="fa fa-lg text-warning pull-left"></i>
+                                        </a>
+                                        <a href="{{application.url}}" target="{{application.target}}">{{application.title}}</a>
+                                        <div ng-show="application.editable" class="desc-appli offtree">
+                                            <div class="popover-title">Description de l'application
+                                                <div class="pull-right">
+                                                    <a ng-click="disableEdit(application)" href="#"><i class="fa fa-lg fa-times"></i></a>
+                                                </div>
+                                            </div>
+                                            <div class="popover-content"><span ng-bind-html="application.description"></span>
+                                            </div>
+                                        </div>
                                     </li>
-                                    </ul>
-                                </div>
-                                <div class="ui-state-disabled" ng-switch-when="false">
-                                    La liste des domaines et applications autoris&eacute;s est vide.
+                                </ul>
+                            </div>
+
+                            <div id="sidebar-<portlet:namespace/>" class="sidebar" ng-hide="searchText && searchText.length >= 2">
+                                <span>{{domaines.domain.length}}</span>
+                                <div ng-switch="domaines.domain.caption.length>0">
+                                    <div ng-switch-when="true">
+                                        <ul>
+                                            <li>
+                                                <i class="fa fa-caret-right pull-left" style="float:left"></i>
+                                                <a href="javascript:void(0)">{{domaines.domain.caption}}</a>
+                                                <ul class="sub-menu">
+                                                    <li ng-repeat="domaine in domaines.domain.applications">
+                                                        <application member="domaine" add-fav="addFav" enable-edit="enableEdit" disable-edit="disableEdit" prefs="prefs" get-target="getTarget"></application></li>
+                                                    <li ng-repeat="domaine in domaines.subDomains">
+                                                        <domaine member="domaine" add-fav="addFav" enable-edit="enableEdit" disable-edit="disableEdit" prefs="prefs" get-target="getTarget"></domaine></li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                        </li>
+                                        </ul>
+                                    </div>
+                                    <div class="ui-state-disabled" ng-switch-when="false">
+                                        La liste des domaines et applications autoris&eacute;s est vide.
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </tab>
-        </tabset>
+                </tab>
+            </tabset>
         </div>
     </div>
     <script type="text/javascript">
