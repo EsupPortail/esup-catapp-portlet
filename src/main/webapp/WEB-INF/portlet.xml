@@ -33,6 +33,11 @@
 				<value>ROOT</value>
                 <read-only>true</read-only>
 			</preference>
+			<preference>
+				<name>withFavs</name>
+				<value>true</value>
+                <read-only>true</read-only>
+			</preference>
             <preference>
                 <name>favoris</name>
             </preference>

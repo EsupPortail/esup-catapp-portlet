@@ -42,7 +42,7 @@
 
 /*alert de modification de la liste des applications favorites*/
 .catapp .alertContainer {
-    height : 30px;
+    max-height : 30px;
 }
 
 .catapp .tabsContainer {

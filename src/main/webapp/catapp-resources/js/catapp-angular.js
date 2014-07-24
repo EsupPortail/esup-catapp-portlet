@@ -1,4 +1,4 @@
-catAppPortlet = function (appName, resourceURL, actionURL, containerURL) {
+catAppPortlet = function (appName, resourceURL, actionURL, containerURL, withFavs) {
 
     var app = angular.module(appName, ['ui.bootstrap', 'ui.sortable', 'ngSanitize']);
 
@@ -10,6 +10,7 @@ catAppPortlet = function (appName, resourceURL, actionURL, containerURL) {
         $scope.applications = [];
         $scope.prefs = [];
         $scope.contUrl = encodeUrl(containerURL);
+        $scope.withFavs = withFavs;
         $http
             .get(url(encodeUrl(resourceURL), 'favapps')).success(function (data) {
                 angular.forEach(data.apps, function (appli) {
@@ -150,11 +151,11 @@ catAppPortlet = function (appName, resourceURL, actionURL, containerURL) {
             },
             link: function (scope, element, attrs) {
                 if ((scope.member.subDomains.length > 0)) {
-                    element.append("<a href='#'><i class='fa fa-caret-right handle pull-left' style='float:left'></i>{{member.domain.caption}}</a><ul class='sub-menu'><li ng-repeat='domaine in member.subDomains'>" +
+                    element.append("<a href='#'><i class='fa fa-caret-right pull-left' style='float:left'></i>{{member.domain.caption}}</a><ul class='sub-menu'><li ng-repeat='domaine in member.subDomains'>" +
                         "<domaine member='domaine' add-fav='addFav()' enable-edit='enableEdit()' disable-edit='disableEdit()' prefs='prefs' get-target='getTarget()'></domaine></li></ul>");
                     $compile(element.contents())(scope)
                 } else {
-                    element.append("<a href='#'><i class='fa fa-caret-right handle pull-left' style='float:left'></i>{{member.domain.caption}}</a>");
+                    element.append("<a href='#'><i class='fa fa-caret-right pull-left' style='float:left'></i>{{member.domain.caption}}</a>");
                 }
                 if ((scope.member.domain.applications.length > 0)) {
                     element.append("<ul class='sub-menu menudrop'><application ng-repeat='member in member.domain.applications'  " +
@@ -179,8 +180,8 @@ catAppPortlet = function (appName, resourceURL, actionURL, containerURL) {
                 getTarget: '&'
             },
             template:"<li class='list-group-item app-item'>"+
-                "<a ng-click='enable()' href='#' title='Description de l&apos;application'><i class='fa fa-lg fa-info-circle pull-left'></i></a>"+
-                "<a ng-click='pushapp();' href='#' title='Ajouter l&apos;application aux favoris' class='help'>"+
+                "<a ng-click='enable()' href='#' title='Description de l&apos;application' class='help'><i class='fa fa-lg fa-info-circle pull-left'></i></a>"+
+                "<a ng-click='pushapp();' href='#' title='Ajouter l&apos;application aux favoris' ng-if='"+withFavs+"'>"+
                 "<i ng-class=\"{'fa-star-o':prefs.indexOf(member.code)== -1, 'fa-star':prefs.indexOf(member.code)> -1}\" class='fa fa-lg text-warning pull-left'></i>" +
                 "</a>"+
                 "<a href='{{member.url}}' target='{{target}}'>{{member.title}}</a>"+
