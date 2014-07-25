@@ -7,7 +7,7 @@
 	<artifactId>catapp-portlet</artifactId>
 	<packaging>war</packaging>
 	<name>Portlet-Catalogue des applications</name>
-	<version>0.2.0</version>
+	<version>0.2.1-SNAPSHOT</version>
 	<description>Catalogue des applications - Portlet</description>
 
 	<repositories>
@@ -75,7 +75,7 @@
 		<connection>scm:git:ssh://git@github.com/EsupPortail/esup-catapp-portlet.git</connection>
 		<developerConnection>scm:git:ssh://git@github.com/EsupPortail/esup-catapp-portlet.git</developerConnection>
 		<url>https://github.com/EsupPortail/esup-catapp-portlet</url>
-		<tag>0.2.0</tag>
+		<tag>HEAD</tag>
 	</scm>
 	<reporting>
 		<plugins>
