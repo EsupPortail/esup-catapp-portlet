@@ -66,16 +66,21 @@ public class CatalogueController {
                         .withResParam("p3", "__p3__")
                         .withResParam("p4", "__p4__")
                         .resourceUrl);
-        PortletURL actionURL = response.createActionURL();
+
+        final PortletURL actionURL = response.createActionURL();
         actionURL.setParameter("action", "@@id@@");
         actionURL.setParameter("p1", "__p1__");
         actionURL.setParameter("p2", "__p2__");
         actionURL.setParameter("p3", "__p3__");
         model.addAttribute("actionURL", actionURL);
-        String fragUrl1 = request.getScheme() + "://" + request.getServerName() +":"+ request.getServerPort();
-        String fragUrl2 = response.createRenderURL().toString();
-        String containerUrl = fragUrl1+"/"+fragUrl2;
+
+        final String fragUrl1 = request.getScheme() + "://" + request.getServerName() +":"+ request.getServerPort();
+        final String fragUrl2 = response.createRenderURL().toString();
         model.addAttribute("containerURL", fragUrl1.toLowerCase()+fragUrl2.toLowerCase());
+
+        final PortletPreferences prefs = request.getPreferences();
+        model.addAttribute("withFavs", prefs.getValue("withFavs", null).trim());
+
         return "catalogue";
     }
 
