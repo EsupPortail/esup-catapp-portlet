@@ -36,6 +36,10 @@ Utilisez alors l'interface graphique d'administration du portail pour publier et
 | Id du domaine racine, à partir duquel l'arbre des domaines et applications d{apos}un utilisateur sera construit.
 | ROOT
 
+| withFavs
+| Activer la gestion des favoris
+| true
+
 | favoris
 | Préférence servant à mémoriser les applications que l{apos}utilisateur souhaite retrouver dans ses favoris
 |
