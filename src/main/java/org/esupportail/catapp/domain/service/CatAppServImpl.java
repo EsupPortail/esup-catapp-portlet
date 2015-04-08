@@ -107,11 +107,13 @@ public class CatAppServImpl implements ICatAppServ {
         for (JsonNode sApp : apps) {
             appString = sApp.asText();
             jApp = getApplication(appString);
-            if(!codesApp.contains(jApp.get("code").asText())) {
-                codesApp.add(jApp.get("code").asText());
-                allJApps.add(jApp);
+            if(jApp != null) {
+                if(!codesApp.contains(jApp.get("code").asText())) {
+                    codesApp.add(jApp.get("code").asText());
+                    allJApps.add(jApp);
+                }
+                jApps.add(jApp);
             }
-            jApps.add(jApp);
         }
         return jApps;
     }
@@ -121,19 +123,13 @@ public class CatAppServImpl implements ICatAppServ {
         WebTarget application = this.webTarget
                 .path(wsAppPath)
                 .path(code);
-        try {
-            return MAPPER.readTree(application.request().get(String.class));
-        } catch (Exception e) {
-            log.error("error in get one application", e);
-            throw new InterruptedException(e.getMessage());
+        Response response = application.request().get();
+        if(response.getStatus() == 200) {
+            String sApp = response.readEntity(String.class);
+            JsonNode jApp = MAPPER.readTree(sApp);
+            return jApp;
         }
-//        Response response = application.request().get();
-//        if(response.getStatus() == 200) {
-//            String sApp = response.readEntity(String.class);
-//            JsonNode jApp = MAPPER.readTree(sApp);
-//            return jApp;
-//        }
-//        return null;
+        return null;
     }
 
     @Override
