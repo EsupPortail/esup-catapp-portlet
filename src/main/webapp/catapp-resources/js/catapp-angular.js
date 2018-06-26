@@ -111,15 +111,23 @@ catAppPortlet = function (appName, resourceURL, actionURL, containerURL, withFav
             } else {
                 target = "_blank";
             }
-            var favori = {"code": appli.code, "title": appli.title, "caption": appli.caption, "description": appli.description, "url": appli.url, "acces": appli.activation, "state": removed, "target": target};
-            return favori;
+            return {
+                "code": appli.code,
+                "title": appli.title,
+                "caption": appli.caption,
+                "description": appli.description,
+                "url": appli.url,
+                "acces": appli.activation,
+                "state": removed,
+                "target": target
+            };
         }
 
         //simply search favoris list for given id
         //and returns the contact object if found
         this.find = function (code, favoris) {
             for (i in favoris) {
-                if (favoris[i] == code) {
+                if (favoris[i] === code) {
                     return favoris[i];
                 }
             }
@@ -179,23 +187,32 @@ catAppPortlet = function (appName, resourceURL, actionURL, containerURL, withFav
                     prefs: '=',
                     getTarget: '&'
             },
-            template:"<li class='list-group-item app-item'>"+
-                "<a ng-click='enable()' href='#' title='Description de l&apos;application' class='help'><i class='fa fa-lg fa-info-circle pull-left'></i></a>"+
-                "<a ng-click='pushapp();' href='#' title='Ajouter l&apos;application aux favoris' ng-if='"+withFavs+"'>"+
-                "<i ng-class=\"{'fa-star-o':prefs.indexOf(member.code)== -1, 'fa-star':prefs.indexOf(member.code)> -1}\" class='fa fa-lg text-warning pull-left'></i>" +
-                "</a>"+
-                "<a href='{{member.url}}' target='{{target}}'>{{member.title}}</a>"+
-                "<div ng-show='member.editable' class='desc-appli'>"+
-                "<div class='popover-title'>Description de l'application"+
-                "<div class='pull-right'>"+
-                "<a ng-click='disable()' href=''#'><i class='fa fa-lg fa-times'></i></a>"+
-                "</div>" +
-                "</div>"+
-                "<div class='popover-content'><span ng-bind-html='member.description'></span>"+
-                "</div>"+
-                "</div>"+
+            template:"" +
+                "<li class=\"list-group-item app-item\">"+
+                    "<a ng-click=\"enable()\" href=\"#\" title=\"Description de l&apos;application\" class=\"help\"><i class=\"fa fa-lg fa-info-circle pull-left\"></i></a>"+
+                    "<a ng-click=\"pushapp()\" href=\"#\" title=\"Ajouter l&apos;application aux favoris\" ng-if=\""+withFavs+"\">"+
+                        "<i ng-class=\"{'fa-star-o':prefs.indexOf(member.code)== -1, 'fa-star':prefs.indexOf(member.code)> -1}\" class=\"fa fa-lg text-warning pull-left\"></i>" +
+                    "</a>"+
+                    "<a href=\"{{member.url}}\" target=\"{{target}}\" ng-if=\"isActive()\">{{member.title}}</a>"+
+                    "<span class=\"unavailable\" ng-if=\"!isActive()\">{{member.title}}</span>"+
+                    "<div ng-show=\"member.editable\" class=\"desc-appli\">"+
+                        "<div class=\"popover-title\">" +
+                            "Description de l'application"+
+                            "<div class=\"pull-right\">"+
+                                "<a ng-click=\"disable()\" href=\"#\"><i class=\"fa fa-lg fa-times\"></i></a>"+
+                            "</div>" +
+                        "</div>"+
+                        "<div class=\"popover-content\">" +
+                            "<span class=\"info-box\" ng-if=\"!isActive()\">L'application est provisoirement indisponible</span>"+
+                            "<span ng-bind-html=\"member.description\"></span>" +
+                        "</div>"+
+                    "</div>"+
                 "</li>",
             link: function (scope, element, attrs) {
+                scope.isActive = function() {
+                    return scope.member.activation === 'Activated'
+                };
+
                 scope.target = scope.getTarget()(scope.member);
 
                 scope.pushapp = function () {

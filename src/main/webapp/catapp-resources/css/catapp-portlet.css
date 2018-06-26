@@ -65,7 +65,6 @@
     white-space: normal;
     background-color: #fff;
     background-clip: padding-box;
-    border: 1px solid #ccc;
     border: 1px solid rgba(0, 0, 0, .2);
     border-radius: 6px;
     -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, .2);
@@ -75,7 +74,7 @@
 }
 
 .catapp .desc-appli .offtree {
-    top:15;
+    top: 15px;
 }
 
 .catapp .desc-appli .popover-title {

@@ -90,7 +90,7 @@ public class CatalogueController {
      */
     protected void bindInitialModel(final RenderRequest request) throws IOException, InterruptedException {
         PortletPreferences prefs = request.getPreferences();
-        String userId = request.getRemoteUser();
+        String userId = "llevague"; //request.getRemoteUser();
         String wsUrl = prefs.getValue("wsUrl", null).trim();
         String idDomain = prefs.getValue("idDomain", null).trim();
         catalogueService.initData(wsUrl, idDomain, userId);

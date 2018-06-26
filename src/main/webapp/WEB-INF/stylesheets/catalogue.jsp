@@ -115,14 +115,17 @@
                                             'fa-star':prefs.indexOf(application.code)> -1}"
                                                class="fa fa-lg text-warning pull-left"></i>
                                         </a>
-                                        <a href="{{application.url}}" target="{{application.target}}">{{application.title}}</a>
+                                        <a href="{{application.url}}" target="{{application.target}}" ng-if="application.activation == 'Activated'">{{application.title}}</a>
+                                        <span class="unavailable" ng-if="application.activation == 'Deactivated'">{{application.title}}</span>
                                         <div ng-show="application.editable" class="desc-appli offtree">
                                             <div class="popover-title">Description de l'application
                                                 <div class="pull-right">
                                                     <a ng-click="disableEdit(application)" href="#"><i class="fa fa-lg fa-times"></i></a>
                                                 </div>
                                             </div>
-                                            <div class="popover-content"><span ng-bind-html="application.description"></span>
+                                            <div class="popover-content">
+                                                <span class="info-box" ng-if="application.activation == 'Deactivated'">L'application est provisoirement indisponible</span>
+                                                <span ng-bind-html="application.description"></span>
                                             </div>
                                         </div>
                                     </li>
@@ -138,8 +141,8 @@
                                                 <i class="fa fa-caret-right pull-left" style="float:left"></i>
                                                 <a href="javascript:void(0)">{{domaines.domain.caption}}</a>
                                                 <ul class="sub-menu">
-                                                    <li ng-repeat="domaine in domaines.domain.applications">
-                                                        <application member="domaine" add-fav="addFav" enable-edit="enableEdit" disable-edit="disableEdit" prefs="prefs" get-target="getTarget"></application></li>
+                                                    <li ng-repeat="appli in domaines.domain.applications">
+                                                        <application member="appli" add-fav="addFav" enable-edit="enableEdit" disable-edit="disableEdit" prefs="prefs" get-target="getTarget"></application></li>
                                                     <li ng-repeat="domaine in domaines.subDomains">
                                                         <domaine member="domaine" add-fav="addFav" enable-edit="enableEdit" disable-edit="disableEdit" prefs="prefs" get-target="getTarget"></domaine></li>
                                                 </ul>
@@ -176,7 +179,8 @@
                                             <a ng-click="disableEdit(application)" href="#"><i class="fa fa-lg fa-times"></i></a>
                                         </div>
                                     </div>
-                                    <div class="popover-content"><span ng-bind-html="application.description"></span>
+                                    <div class="popover-content">
+                                        <span ng-bind-html="application.description"></span>
                                     </div>
                                 </div>
                             </li>
@@ -192,8 +196,8 @@
                                         <i class="fa fa-caret-right pull-left" style="float:left"></i>
                                         <a href="javascript:void(0)">{{domaines.domain.caption}}</a>
                                         <ul class="sub-menu">
-                                            <li ng-repeat="domaine in domaines.domain.applications">
-                                                <application member="domaine" add-fav="addFav" enable-edit="enableEdit" disable-edit="disableEdit" prefs="prefs" get-target="getTarget"></application></li>
+                                            <li ng-repeat="appli in domaines.domain.applications">
+                                                <application member="appli" add-fav="addFav" enable-edit="enableEdit" disable-edit="disableEdit" prefs="prefs" get-target="getTarget"></application></li>
                                             <li ng-repeat="domaine in domaines.subDomains">
                                                 <domaine member="domaine" add-fav="addFav" enable-edit="enableEdit" disable-edit="disableEdit" prefs="prefs" get-target="getTarget"></domaine></li>
                                         </ul>
@@ -218,7 +222,7 @@
         menu.innerHTML = htmlString;
         document.getElementById('catAppPortlet-<portlet:namespace/>').appendChild(menu);
     }
-    setTimeout("launchJs();", 2000)
+    setTimeout("launchJs();", 100)
 
 
     var htmlString = "$(document).ready(function() {";
